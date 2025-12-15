@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react";
 import Image from 'next/image';
+import { redirect } from "next/dist/server/api-utils";
 
 
 
@@ -33,6 +34,7 @@ export default function EsewaPayment() {
             });
             if (!response.ok) {
                 const errorData = await response.json();
+                console.log("this is the error data:", errorData);
                 throw new Error(errorData.error || 'Payment initiation failed');
             }
 
@@ -51,22 +53,28 @@ export default function EsewaPayment() {
                 form.appendChild(input);
             };
 
-            addField('ammount', params.amount);
+            addField('amount', params.amount);
             addField('tax_amount', params.tax_amount);
             addField('total_amount', params.total_amount);
             addField('transaction_uuid', params.transaction_uuid);
             addField('product_code', params.product_code);
-            addField('signed_field_names', params.signed_field_names);
+            addField('product_service_charge', params.product_service_charge);
+            addField('product_delivery_charge', params.product_delivery_charge);
+            addField('signed_field_names', params.signed_field_name);
             addField('signature', params.signature);
             addField('success_url', params.success_url);
             addField('failure_url', params.failure_url);
             document.body.appendChild(form);
             form.submit();
 
+            setIsSubmitting(false);
+            
+
         }
         catch (err: any) {
             console.error('Payment Error : ', err);
             setError(err.message || 'Payment initiation failed');
+            console.log("this is the error data:", err);
             setIsSubmitting(false);
         }
     };
@@ -91,7 +99,7 @@ export default function EsewaPayment() {
                     <div>
                         <label className="block text-sm font-medium mb-1 text-white">Email</label>
                         <input
-                            type="text"
+                            type="email"
                             name="email"
                             value={formData.email || ""}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -104,7 +112,7 @@ export default function EsewaPayment() {
                         <input
                             type="number"
                             name="amount"
-                            value={formData.amount || ""}
+                            value={formData.amount === 0 ?  "" : formData.amount}
                             onChange={(e) => setFormData({
                                 ...formData,
                                 amount: Math.max(1, Number(e.target.value))
