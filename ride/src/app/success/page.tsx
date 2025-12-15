@@ -70,7 +70,9 @@ export default function SuccessPage() {
       )}
 
       <button
-        onClick={() => router.push('/')}
+        onClick={() => {
+          localStorage.removeItem('paymentData');
+          router.push('/')}}
         className="mt-6 px-8 py-3 bg-green-500 text-black font-semibold rounded hover:bg-green-400 transition"
       >
         Go to Home
