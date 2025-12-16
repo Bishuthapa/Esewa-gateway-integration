@@ -1,4 +1,4 @@
-import { generateEsewaSignature } from "@/lib/esewa/verifySignature";
+import { generateEsewaSignature } from "@/lib/esewa/generateSignature";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
